@@ -9,7 +9,7 @@ df = dados.copy()
 df.dropna(inplace=True)
 
 
-eua_states = json.load(open("us-states.json"))
+#eua_states = json.load(open("us-states.json"))
 
 # Opcional: traduzindo as variáveis para o pt
 mapa = {'housing_median_age': 'idade da casa',
