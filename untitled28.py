@@ -25,14 +25,6 @@ categories = list(df['Proximidade do mar'].unique())
 
 # Criei um gráfico de dispersão usando o Plotly
 # Documentação: https://plotly.github.io/plotly.py-docs/generated/plotly.express.scatter_mapbox.html
-# px.scatter_mapbox é um comando que permite visualizar um gráfico de distribuição em forma de caixa
-# 1º especifiquei o dataset df
-# 2º após relacionei lat e lon com a primeira e segunda coluna do df
-# 3º color='Proximidade do mar', permite com que de acordo com a localidade que para o nosso caso são 5,
-# 4º mapbox_style, permite a utilização do mapa aberto
-fig = px.scatter_mapbox(df, lat="latitude", lon="longitude", color="Proximidade do mar",
-                        mapbox_style="open-street-map", zoom=3,
-                        height=800)
 
 # estou me baseando nesse artigo pra editar a filtragem
 ### Configurando a visualização no Streamlit
@@ -40,28 +32,38 @@ st.title("Análise do Preço por Região\n")
 st.write("Vamos ver como o preço de casas na Califórnia varia por região.")
 
 # Filtros para a tabela
-mostra_qntd_linhas = 0
-
-checkbox_mostrar_tabela = st.sidebar.checkbox('Mostrar tabela')
+checkbox_mostrar_tabela = st.sidebar.checkbox('Mostrar tabela') # Se estiver selecionado no streamlit
 if checkbox_mostrar_tabela:
 
-    st.sidebar.markdown('## Filtro para a tabela')
+    st.sidebar.markdown('## Filtro para a tabela') # mostra as possibilidades de filtro (near bay, the ocean, inland, near ocean, island)
 
-    categorias = list(df["Proximidade do mar"].unique())
-
+    categorias = list(df["Proximidade do mar"].unique()) #cria uma opção com todas as categorias
+    categorias.append('Todas') # Adiciona todas, para caso queira ver todas as regiões pintadas no streamlit depois
 
     categoria = st.sidebar.selectbox('Selecione a região para visualizar o gráfico',
-                                 options = categorias)
+                                     options = categorias)
+    # 1º Filtrar os dados
+    # 2º Fazer figura de acordo com o dado filtrado
+    # 3º Aplicar ao streamlit
 
-#if categoria != 'Todas':
-    #df['Proximidade do Mar'] = df.query('categoria == @categoria')
-    #mostra_qntd_linhas += 1
-#else:
-    #mostra_qntd_linhas(df)
+    if categoria != 'Todas': # Se a categoria no selectbox que criei for diferente de todas, seleciona a categoria escolhida
+        df = df.loc[df["Proximidade do mar"] == categoria] # cria um dataframe com a categoria escolhida, que vai ser utilizado na fig
+    else:
+        pass
 
-# Adicione o gráfico ao Streamlit
-st.plotly_chart(fig)
+    # px.scatter_mapbox é um comando que permite visualizar um gráfico de distribuição em forma de caixa
+    # 1º especifiquei o dataset df
+    # 2º após relacionei lat e lon com a primeira e segunda coluna do df
+    # 3º color='Proximidade do mar', permite com que de acordo com a localidade que para o nosso caso são 5, faça uma cor pra cada local
+    # 4º mapbox_style, permite a utilização do mapa aberto
+    fig = px.scatter_mapbox(df, lat="latitude", lon="longitude", color="Proximidade do mar",
+                            mapbox_style="open-street-map", zoom=3,
+                            height=800)
 
+    # Adicione o gráfico ao Streamlit
+    st.plotly_chart(fig)
+
+# A figura precisa ficar depois da filtragem, pois a figura que queremos visualizar pode variar com o selectbox escolhido
 
 
 
