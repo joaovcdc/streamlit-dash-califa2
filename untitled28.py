@@ -56,8 +56,12 @@ if checkbox_mostrar_tabela:
     # 2º após relacionei lat e lon com a primeira e segunda coluna do df
     # 3º color='Proximidade do mar', permite com que de acordo com a localidade que para o nosso caso são 5, faça uma cor pra cada local
     # 4º mapbox_style, permite a utilização do mapa aberto
-    fig = px.scatter_mapbox(df, lat="latitude", lon="longitude", color="Proximidade do mar",
-                            mapbox_style="open-street-map", zoom=3,
+
+    df['valor_mediano_da_casa'] = 'R$ ' + df['valor mediano da casa'].astype(str)
+
+    colors = ['purple', 'gray', 'pink', 'red', 'green'] # lista de cores
+    fig = px.scatter_mapbox(df, lat="latitude", lon="longitude", color = "Proximidade do mar", text = df['valor_mediano_da_casa']
+                            ,mapbox_style="open-street-map", zoom=3, color_discrete_sequence = colors,
                             height=800)
 
     # Adicione o gráfico ao Streamlit
